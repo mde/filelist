@@ -277,9 +277,18 @@ FileList.prototype = new (function () {
   };
 
   /**
-   * Get rid of any current exclusion rules
+   * Clear any pending items -- only useful before
+   * calling `resolve`
    */
-  this.clearExclude = function () {
+  this.clearInclusions = function () {
+    this.pendingAdd = [];
+    return this;
+  };
+
+  /**
+   * Clear any current exclusion rules
+   */
+  this.clearExclusions = function () {
     this.excludes = {
       pats: []
     , funcs: []
