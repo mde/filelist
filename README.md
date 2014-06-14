@@ -11,7 +11,7 @@ itself is actually used. The key is that the first time an
 element of the FileList/Array is requested, the pending patterns
 are resolved into a real list of file names.
 
-## Usage
+### Usage
 
 Add files to the list with the `include` method. You can add glob
 patterns, individual files, or RegExp objects. When the Array
@@ -27,7 +27,7 @@ fl.exclude('test/helpers.js');
 Use the `exclude` method to override inclusions. You can use this
 when your inclusions are too broad.
 
-## Array methods
+### Array methods
 
 FileList has lazy-evaluated versions of most of the array
 methods, including the following:
@@ -56,7 +56,7 @@ When you call one of these methods, the items in the FileList
 will be resolved to the full list of files, and the method will
 be invoked on that result.
 
-## Special `length` method
+### Special `length` method
 
 `length`: FileList includes a length *method* (instead of a
 property) which returns the number of actual files in the list
