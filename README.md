@@ -62,7 +62,7 @@ be invoked on that result.
 property) which returns the number of actual files in the list
 once it's been resolved.
 
-## FileList-specific methods
+### FileList-specific methods
 
 `include`: Add a filename/glob/regex to the list
 
