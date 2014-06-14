@@ -56,11 +56,13 @@ When you call one of these methods, the items in the FileList
 will be resolved to the full list of files, and the method will
 be invoked on that result.
 
+## Special `length` method
+
 `length`: FileList includes a length *method* (instead of a
 property) which returns the number of actual files in the list
 once it's been resolved.
 
-## Special methods
+## FileList-specific methods
 
 `include`: Add a filename/glob/regex to the list
 
