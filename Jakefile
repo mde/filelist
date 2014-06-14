@@ -1,5 +1,8 @@
+testTask('FileList', function () {
+  this.testFiles.include('test/*.js');
+});
 
-publishTask('filelist', function () {
+publishTask('FileList', function () {
   this.packageFiles.include([
     'Jakefile'
   , 'README.md'

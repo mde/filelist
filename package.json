@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/mde/filelist/issues"
   },
-  "homepage": "https://github.com/mde/filelist"
+  "homepage": "https://github.com/mde/filelist",
+  "dependencies": {
+    "minimatch": "^0.3.0",
+    "utilities": "0.0.37"
+  }
 }
