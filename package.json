@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/mde/filelist",
   "dependencies": {
-    "minimatch": "0.3.0",
-    "utilities": "0.0.37"
+    "minimatch": "2.0.x",
+    "utilities": "1.0.x"
   }
 }
