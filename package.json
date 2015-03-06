@@ -24,5 +24,8 @@
   "dependencies": {
     "minimatch": "2.0.x",
     "utilities": "1.0.x"
+  },
+  "devDependencies": {
+    "jake": "latest"
   }
 }
