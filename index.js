@@ -38,9 +38,6 @@ globSync = function (pat) {
 
   if (files) {
     pat = path.normalize(pat);
-    // Hack, Minimatch doesn't support backslashes in the pattern
-    // https://github.com/isaacs/minimatch/issues/7
-    pat = pat.replace(/\\/g, '/');
     matches = minimatch.match(files, pat, {});
   }
   return matches || [];
