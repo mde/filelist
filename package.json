@@ -4,7 +4,7 @@
   "description": "Lazy-evaluating list of files, based on globs or regex patterns",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jake test"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/mde/filelist",
   "dependencies": {
-    "minimatch": "0.3.0",
+    "minimatch": "3.0.3",
     "utilities": "0.0.37"
   }
 }

@@ -17,6 +17,10 @@ tests = {
     jake.rmRf('./test/tmp/one', {silent: true});
   }
 
+, 'after': function () {
+    jake.rmRf('./test/tmp', {silent:true});
+  }
+
 , 'path separator can be used by exclude': function () {
     var fileList = new FileList();
     fileList.include("test/tmp/one/**/*.txt");
