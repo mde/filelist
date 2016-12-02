@@ -16,13 +16,13 @@
     "glob"
   ],
   "author": "Matthew Eernisse <mde@fleegix.org> (http://fleegix.org)",
-  "license": "Apache 2",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/mde/filelist/issues"
   },
   "homepage": "https://github.com/mde/filelist",
   "dependencies": {
-    "minimatch": "3.0.3",
-    "utilities": "0.0.37"
+    "minimatch": "^3.0.3",
+    "utilities": "^0.0.37"
   }
 }
