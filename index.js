@@ -21,7 +21,7 @@ var fs = require('fs')
 , utils = require('utilities')
 , globSync;
 
-globSync = function (pat) {
+globSync = function (pat, opts) {
   var dirname = utils.file.basedir(pat)
     , files
     , matches;
@@ -38,7 +38,7 @@ globSync = function (pat) {
 
   if (files) {
     pat = path.normalize(pat);
-    matches = minimatch.match(files, pat, {});
+    matches = minimatch.match(files, pat, opts || {});
   }
   return matches || [];
 };
@@ -128,17 +128,17 @@ var FileList = function () {
 FileList.prototype = new (function () {
   var globPattern = /[*?\[\{]/;
 
-  var _addMatching = function (pat) {
-        var matches = globSync(pat);
+  var _addMatching = function (item) {
+        var matches = globSync(item.path, item.options);
         this.items = this.items.concat(matches);
       }
 
-    , _resolveAdd = function (name) {
-        if (globPattern.test(name)) {
-          _addMatching.call(this, name);
+    , _resolveAdd = function (item) {
+        if (globPattern.test(item.path)) {
+          _addMatching.call(this, item);
         }
         else {
-          this.push(name);
+          this.push(item.path);
         }
       }
 
@@ -191,12 +191,29 @@ FileList.prototype = new (function () {
    * pattern for finding file to include in the list. Arguments should be strings
    * for either a glob-pattern or a specific file-name, or an array of them
    */
-  this.include = function (items) {
-    if (items) {
-      this.pendingAdd = this.pendingAdd.concat(items).filter(function (item) {
-        return !!item;
-      });
+  this.include = function () {
+    var args = arguments
+        , arg
+        , includes = { items: [], options: {} };
+
+    for (var i = 0, ilen = args.length; i < ilen; i++) {
+      arg = args[i]
+
+      if (typeof arg === 'object' && !Array.isArray(arg)) {
+        Object.assign(includes.options, arg)
+      } else {
+        includes.items = includes.items.concat(arg).filter(function (item) {
+          return !!item
+        })
+      }
     }
+
+    var items = includes.items.map(function(item) {
+      return { path: item, options: includes.options };
+    });
+
+    this.pendingAdd = this.pendingAdd.concat(items);
+
     return this;
   };
 
@@ -246,7 +263,7 @@ FileList.prototype = new (function () {
    * actual files
    */
   this.resolve = function () {
-    var name
+    var item
       , uniqueFunc = function (p, c) {
           if (p.indexOf(c) < 0) {
             p.push(c);
@@ -255,8 +272,8 @@ FileList.prototype = new (function () {
         };
     if (this.pending) {
       this.pending = false;
-      while ((name = this.pendingAdd.shift())) {
-        _resolveAdd.call(this, name);
+      while ((item = this.pendingAdd.shift())) {
+        _resolveAdd.call(this, item);
       }
       // Reduce to a unique list
       this.items = this.items.reduce(uniqueFunc, []);

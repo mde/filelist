@@ -11,6 +11,9 @@ tests = {
 
     fs.writeFileSync("./test/tmp/one/two/three/file.txt", "hello");
     fs.writeFileSync("./test/tmp/one/exclude/file.txt", "world");
+
+    fs.writeFileSync("./test/tmp/foo.json", "{}")
+    fs.writeFileSync("./test/tmp/bar.JSON", "{}")
   }
 
 , 'afterEach': function () {
@@ -34,6 +37,12 @@ tests = {
     fileList.include("test/tmp/one/**/*.txt");
     fileList.include("test/tmp/one/two/three/file.txt");
     assert.equal(fileList.toArray().length, 2);
+  }
+
+, 'passing options to minimatch object': function () {
+    var filelist = new FileList;
+    filelist.include("test/tmp/*.json", { nocase: true })
+    assert.equal(filelist.toArray().length, 2)
   }
 
 };
