@@ -200,7 +200,7 @@ FileList.prototype = new (function () {
       arg = args[i]
 
       if (typeof arg === 'object' && !Array.isArray(arg)) {
-        Object.assign(includes.options, arg)
+        utils.object.merge(includes.options, arg);
       } else {
         includes.items = includes.items.concat(arg).filter(function (item) {
           return !!item
