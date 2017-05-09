@@ -197,14 +197,14 @@ FileList.prototype = new (function () {
         , includes = { items: [], options: {} };
 
     for (var i = 0, ilen = args.length; i < ilen; i++) {
-      arg = args[i]
+      arg = args[i];
 
       if (typeof arg === 'object' && !Array.isArray(arg)) {
         utils.object.merge(includes.options, arg);
       } else {
         includes.items = includes.items.concat(arg).filter(function (item) {
-          return !!item
-        })
+          return !!item;
+        });
       }
     }
 
