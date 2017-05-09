@@ -192,7 +192,7 @@ FileList.prototype = new (function () {
    * for either a glob-pattern or a specific file-name, or an array of them
    */
   this.include = function () {
-    var args = arguments
+    var args = Array.prototype.slice.call(arguments)
         , arg
         , includes = { items: [], options: {} };
 
