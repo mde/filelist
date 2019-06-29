@@ -14,6 +14,7 @@ declare module "filelist" {
     }
     items: string[]
     static clone() : FileList
+    static debug : boolean
     toArray() : string[]
     include(options:any, ...items:string[]) : void
     exclude(...items:string[]) : void
