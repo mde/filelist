@@ -33,7 +33,7 @@ globSync = function (pat, opts) {
   }
   // Bail if path doesn't exist -- assume no files
   catch(e) {
-    console.error(e.message);
+    if (FileList.debug) console.error(e.message);
   }
 
   if (files) {
@@ -329,5 +329,7 @@ FileList.clone = function (list, items) {
   }
   return clone;
 };
+
+FileList.debug = true
 
 exports.FileList = FileList;
