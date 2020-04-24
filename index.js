@@ -18,16 +18,167 @@
 var fs = require('fs')
 , path = require('path')
 , minimatch = require('minimatch')
-, utils = require('utilities')
+, escapeRegExpChars
+, merge
+, basedir
+, _readDir
+, readdirR
 , globSync;
 
+  /**
+    @name escapeRegExpChars
+    @function
+    @return {String} A string of escaped characters
+    @description Escapes regex control-characters in strings
+                 used to build regexes dynamically
+    @param {String} string The string of chars to escape
+  */
+  escapeRegExpChars = (function () {
+    var specials = [ '^', '$', '/', '.', '*', '+', '?', '|', '(', ')',
+        '[', ']', '{', '}', '\\' ];
+    var sRE = new RegExp('(\\' + specials.join('|\\') + ')', 'g');
+    return function (string) {
+      var str = string || '';
+      str = String(str);
+      return str.replace(sRE, '\\$1');
+    };
+  })();
+
+  /**
+    @name merge
+    @function
+    @return {Object} Returns the merged object
+    @description Merge merges `otherObject` into `object` and takes care of deep
+                 merging of objects
+    @param {Object} object Object to merge into
+    @param {Object} otherObject Object to read from
+  */
+  merge = function (object, otherObject) {
+    var obj = object || {}
+      , otherObj = otherObject || {}
+      , key, value;
+
+    for (key in otherObj) {
+      value = otherObj[key];
+
+      // Check if a value is an Object, if so recursively add it's key/values
+      if (typeof value === 'object' && !(value instanceof Array)) {
+        // Update value of object to the one from otherObj
+        obj[key] = merge(obj[key], value);
+      }
+      // Value is anything other than an Object, so just add it
+      else {
+        obj[key] = value;
+      }
+    }
+
+    return obj;
+  };
+  /**
+    Given a patern, return the base directory of it (ie. the folder
+    that will contain all the files matching the path).
+    eg. file.basedir('/test/**') => '/test/'
+    Path ending by '/' are considerd as folder while other are considerd
+    as files, eg.:
+        file.basedir('/test/a/') => '/test/a'
+        file.basedir('/test/a') => '/test'
+    The returned path always end with a '/' so we have:
+        file.basedir(file.basedir(x)) == file.basedir(x)
+  */
+  basedir = function (pathParam) {
+    var bd = ''
+      , parts
+      , part
+      , pos = 0
+      , p = pathParam || '';
+
+    // If the path has a leading asterisk, basedir is the current dir
+    if (p.indexOf('*') == 0 || p.indexOf('**') == 0) {
+      return '.';
+    }
+
+    // always consider .. at the end as a folder and not a filename
+    if (/(?:^|\/|\\)\.\.$/.test(p.slice(-3))) {
+      p += '/';
+    }
+
+    parts = p.split(/\\|\//);
+    for (var i = 0, l = parts.length - 1; i < l; i++) {
+      part = parts[i];
+      if (part.indexOf('*') > -1 || part.indexOf('**') > -1) {
+        break;
+      }
+      pos += part.length + 1;
+      bd += part + p[pos - 1];
+    }
+    if (!bd) {
+      bd = '.';
+    }
+    // Strip trailing slashes
+    if (!(bd == '\\' || bd == '/')) {
+      bd = bd.replace(/\\$|\/$/, '');
+    }
+    return bd;
+
+  };
+
+  // Return the contents of a given directory
+  _readDir = function (dirPath) {
+    var dir = path.normalize(dirPath)
+      , paths = []
+      , ret = [dir]
+      , msg;
+
+    try {
+      paths = fs.readdirSync(dir);
+    }
+    catch (e) {
+      msg = 'Could not read path ' + dir + '\n';
+      if (e.stack) {
+        msg += e.stack;
+      }
+      throw new Error(msg);
+    }
+
+    paths.forEach(function (p) {
+      var curr = path.join(dir, p);
+      var stat = fs.statSync(curr);
+      if (stat.isDirectory()) {
+        ret = ret.concat(_readDir(curr));
+      }
+      else {
+        ret.push(curr);
+      }
+    });
+
+    return ret;
+  };
+
+  /**
+    @name file#readdirR
+    @function
+    @return {Array} Returns the contents as an Array, can be configured via opts.format
+    @description Reads the given directory returning it's contents
+    @param {String} dir The directory to read
+    @param {Object} opts Options to use
+      @param {String} [opts.format] Set the format to return(Default: Array)
+  */
+  readdirR = function (dir, opts) {
+    var options = opts || {}
+      , format = options.format || 'array'
+      , ret;
+    ret = _readDir(dir);
+    return format == 'string' ? ret.join('\n') : ret;
+  };
+
+
 globSync = function (pat, opts) {
-  var dirname = utils.file.basedir(pat)
+  var dirname = basedir(pat)
     , files
     , matches;
 
   try {
-    files = utils.file.readdirR(dirname).map(function(file){
+    files = readdirR(dirname).map(function(file){
       return file.replace(/\\/g, '/');
     });
   }
@@ -155,13 +306,13 @@ FileList.prototype = new (function () {
             if (/[*?]/.test(pat)) {
               matches = globSync(pat);
               matches = matches.map(function (m) {
-                return utils.string.escapeRegExpChars(m);
+                return escapeRegExpChars(m);
               });
               excl = excl.concat(matches);
             }
             // String for regex
             else {
-              excl.push(utils.string.escapeRegExpChars(pat));
+              excl.push(escapeRegExpChars(pat));
             }
           }
           // Regex, grab the string-representation
@@ -200,7 +351,7 @@ FileList.prototype = new (function () {
       arg = args[i];
 
       if (typeof arg === 'object' && !Array.isArray(arg)) {
-        utils.object.merge(includes.options, arg);
+        merge(includes.options, arg);
       } else {
         includes.items = includes.items.concat(arg).filter(function (item) {
           return !!item;
