@@ -184,7 +184,7 @@ globSync = function (pat, opts) {
   }
   // Bail if path doesn't exist -- assume no files
   catch(e) {
-    if (FileList.debug) console.error(e.message);
+    if (FileList.verbose) console.error(e.message);
   }
 
   if (files) {
@@ -481,6 +481,6 @@ FileList.clone = function (list, items) {
   return clone;
 };
 
-FileList.debug = true
+FileList.verbose = true
 
 exports.FileList = FileList;

@@ -13,15 +13,15 @@ declare module "filelist" {
       regex: null | RegExp
     }
     items: string[]
-    static clone() : FileList
-    static debug : boolean
-    toArray() : string[]
-    include(options:any, ...items:string[]) : void
-    exclude(...items:string[]) : void
-    resolve() : void
-    clearInclusions() : void
-    clearExclusions() : void
-    length() : number
+    static clone(): FileList
+    static verbose: boolean
+    toArray(): string[]
+    include(options: any, ...items: string[]): void
+    exclude(...items: string[]): void
+    resolve(): void
+    clearInclusions(): void
+    clearExclusions(): void
+    length(): number
     toString(): string;
     toLocaleString(): string;
     push(...items: string[]): number;
