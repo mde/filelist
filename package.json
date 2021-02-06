@@ -1,6 +1,6 @@
 {
   "name": "filelist",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Lazy-evaluating list of files, based on globs or regex patterns",
   "main": "index.js",
   "types": "index.d.ts",
