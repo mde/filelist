@@ -1,50 +1,47 @@
-var FileList = require('../index').FileList
-  , fs = require("fs")
-  , assert = require("assert")
-  , tests;
+const { FileList } = require('../index.js')
+const fs = require('fs')
+const assert = require('assert')
 
-tests = {
+const tests = {
+  beforeEach () {
+    jake.mkdirP('./test/tmp/one/two/three')
+    jake.mkdirP('./test/tmp/one/exclude')
 
-  'beforeEach': function () {
-    jake.mkdirP("./test/tmp/one/two/three");
-    jake.mkdirP("./test/tmp/one/exclude");
+    fs.writeFileSync('./test/tmp/one/two/three/file.txt', 'hello')
+    fs.writeFileSync('./test/tmp/one/exclude/file.txt', 'world')
 
-    fs.writeFileSync("./test/tmp/one/two/three/file.txt", "hello");
-    fs.writeFileSync("./test/tmp/one/exclude/file.txt", "world");
+    fs.writeFileSync('./test/tmp/foo.json', '{}')
+    fs.writeFileSync('./test/tmp/bar.JSON', '{}')
+  },
 
-    fs.writeFileSync("./test/tmp/foo.json", "{}")
-    fs.writeFileSync("./test/tmp/bar.JSON", "{}")
-  }
+  afterEach () {
+    jake.rmRf('./test/tmp/one', { silent: true })
+  },
 
-, 'afterEach': function () {
-    jake.rmRf('./test/tmp/one', {silent: true});
-  }
+  after () {
+    jake.rmRf('./test/tmp', { silent: true })
+  },
 
-, 'after': function () {
-    jake.rmRf('./test/tmp', {silent:true});
-  }
+  'path separator can be used by exclude' () {
+    const fileList = new FileList()
+    fileList.include('test/tmp/one/**/*.txt')
+    assert.equal(fileList.toArray().length, 2)
+    fileList.exclude('tmp/one/exclude')
+    assert.equal(fileList.toArray().length, 1)
+  },
 
-, 'path separator can be used by exclude': function () {
-    var fileList = new FileList();
-    fileList.include("test/tmp/one/**/*.txt");
-    assert.equal(fileList.toArray().length, 2);
-    fileList.exclude("tmp/one/exclude");
-    assert.equal(fileList.toArray().length, 1);
-  }
+  'returns a list of unique file entries' () {
+    const fileList = new FileList()
+    fileList.include('test/tmp/one/**/*.txt')
+    fileList.include('test/tmp/one/two/three/file.txt')
+    assert.equal(fileList.toArray().length, 2)
+  },
 
-, 'returns a list of unique file entries': function () {
-    var fileList = new FileList();
-    fileList.include("test/tmp/one/**/*.txt");
-    fileList.include("test/tmp/one/two/three/file.txt");
-    assert.equal(fileList.toArray().length, 2);
-  }
-
-, 'passing options to minimatch object': function () {
-    var filelist = new FileList;
-    filelist.include("test/tmp/*.json", { nocase: true })
+  'passing options to minimatch object' () {
+    const filelist = new FileList()
+    filelist.include('test/tmp/*.json', { nocase: true })
     assert.equal(filelist.toArray().length, 2)
   }
+}
 
-};
-
-module.exports = tests;
+module.exports = tests
