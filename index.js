@@ -198,6 +198,7 @@ globSync = function (pat, opts) {
 
   if (files) {
     pat = path.normalize(pat);
+    pat = pat.replace(/\\/g, '/'); // Suggested by Marcus10110 https://github.com/mde/filelist/pull/16
     matches = minimatch.match(files, pat, opts || {});
   }
   return matches || [];
