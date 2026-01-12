@@ -1,5 +1,5 @@
 testTask('FileList', function () {
-  this.testFiles.include('test/*.js');
+  this.testFiles.include('test/filelist.js');
 });
 
 publishTask('FileList', function () {
