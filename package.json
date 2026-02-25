@@ -21,11 +21,8 @@
   "bugs": {
     "url": "https://github.com/mde/filelist/issues"
   },
-  "engines": {
-    "node": "20 || >=22"
-  },
   "homepage": "https://github.com/mde/filelist",
   "dependencies": {
-    "minimatch": "^10.2.1"
+    "minimatch": "^5.0.1"
   }
 }
