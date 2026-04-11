@@ -45,6 +45,12 @@ tests = {
     assert.equal(filelist.toArray().length, 2)
   }
 
+, 'matches globs with windows path separators': function () {
+    var filelist = new FileList;
+    filelist.include("test\\tmp\\one\\**\\*.txt");
+    assert.equal(filelist.toArray().length, 2);
+  }
+
 };
 
 module.exports = tests;

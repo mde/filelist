@@ -182,6 +182,8 @@ var hasOwn = function (obj, key) { return hasOwnProperty.apply(obj, [key]); };
 
 
 globSync = function (pat, opts) {
+  pat = path.posix.normalize((pat || '').replace(/\\/g, '/'));
+
   var dirname = basedir(pat)
     , files
     , matches;
@@ -197,7 +199,6 @@ globSync = function (pat, opts) {
   }
 
   if (files) {
-    pat = path.normalize(pat);
     matches = minimatch.match(files, pat, opts || {});
   }
   return matches || [];
