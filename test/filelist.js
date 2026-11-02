@@ -51,6 +51,18 @@ tests = {
     assert.equal(filelist.toArray().length, 2);
   }
 
+, 'preserves brace expansion, dotfile options and exclusions': function () {
+    fs.writeFileSync('test/tmp/.hidden.json', '{}');
+    var filelist = new FileList();
+    filelist.include('test/tmp/{foo,.hidden}.json', {dot: true});
+    filelist.include('test/tmp/bar.*', {nocase: true});
+    filelist.exclude('test/tmp/foo.json');
+    assert.deepEqual(filelist.toArray().sort(), [
+      'test/tmp/.hidden.json',
+      'test/tmp/bar.JSON'
+    ]);
+  }
+
 };
 
 module.exports = tests;
